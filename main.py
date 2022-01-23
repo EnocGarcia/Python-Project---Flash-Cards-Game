@@ -8,8 +8,12 @@ import pandas as pd
 
 # --------------------- FUNCTIONS ---------------------
 
-dataset = pd.read_csv("data/french_words.csv")
-
+try:
+    dataset = pd.read_csv("data/words_to_learn.csv")
+    print("Words to learn")
+except FileNotFoundError:
+    print("Full set")
+    dataset = pd.read_csv("data/french_words.csv")
 
 words_dict = dataset.to_dict(orient="records")
 
@@ -47,6 +51,22 @@ def flip_card():
     )
 
 
+def knows_word():
+    """User press the check button"""
+    global CURRENT_WORD
+
+    words_dict.remove(CURRENT_WORD)
+    new_df = pd.DataFrame(data=words_dict)
+    new_df.to_csv("data/words_to_learn.csv", index=False, mode="w")
+
+    get_word()
+
+
+def doesnot_knows_word():
+    """User press the cross button"""
+    get_word()
+
+
 # ---------------------- UI SETUP ----------------------
 BACKGROUND_COLOR = "#B1DDC6"
 
@@ -71,12 +91,12 @@ flash_card.grid(column=0, columnspan=2, row=0)
 
 correct_image = PhotoImage(file="images/right.png")
 correct_button = Button(image=correct_image, highlightthickness=0, borderwidth=0)
-correct_button.config(command=get_word)
+correct_button.config(command=knows_word)
 correct_button.grid(column=0, row=1)
 
 wrong_image = PhotoImage(file="images/wrong.png")
 wrong_button = Button(image=wrong_image, highlightthickness=0, borderwidth=0)
-wrong_button.config(command=get_word)
+wrong_button.config(command=doesnot_knows_word)
 wrong_button.grid(column=1, row=1)
 
 get_word()
