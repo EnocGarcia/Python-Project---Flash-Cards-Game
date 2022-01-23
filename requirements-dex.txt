@@ -1,2 +1,2 @@
-pylint
-black
+pylint==2.12.2
+black==21.12b0
